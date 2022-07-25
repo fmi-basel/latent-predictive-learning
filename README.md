@@ -39,6 +39,10 @@ Only a VGG-11 architecture is provided here, but the framework can easily be ext
 
 Jupyter notebooks (3a, 3b and 3c) provided in `notebooks` contain instructions on extracting and visualising several metrics for the quality of learned representations. Also provided there are notebooks for generating all figures from the paper.
 
+## Spiking network code
+
+The spiking network code will be released in the near future, at the latest, upon manuscript acceptance.
+
 ## Citation
 
 ```
