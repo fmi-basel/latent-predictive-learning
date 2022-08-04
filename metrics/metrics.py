@@ -22,9 +22,10 @@ def compute_cosine_measures(X, y, diagnostic_mode=False):
 
     for i in torch.unique(y):
         idxs = torch.nonzero(y == i, as_tuple=False).squeeze()
-
-        for i in idxs:
-            exclusion_mask[i, idxs] = True
+        if len(idxs.shape)==0:
+            idxs = idxs.unsqueeze(0) # Needed for case when only one example present for a class
+        for j in idxs:
+            exclusion_mask[j, idxs] = True
         cos_dists_of_class = cos_dists[idxs][:, idxs]
         num_samples = cos_dists_of_class.shape[0]
 

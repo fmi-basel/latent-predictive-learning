@@ -132,10 +132,14 @@ def cli_main():
         model = LPL(**args.__dict__)
 
     # callbacks
-    repr_eval = SSLEvalCallback(num_epochs=20, test_dataloader=data_module.test_dataloader())
     printing = PrintTableMetricsCallback()
 
-    callbacks = [repr_eval]
+    if args.gpus > 1:
+        print("Online evaluation with multi-gpu training currently not supported, use notebooks for post-training evaluation instead")
+        callbacks = []
+    else:
+        repr_eval = SSLEvalCallback(num_epochs=20, test_dataloader=data_module.test_dataloader())
+        callbacks = [repr_eval]
     if args.verbose_printing:
         callbacks.append(printing)
 
