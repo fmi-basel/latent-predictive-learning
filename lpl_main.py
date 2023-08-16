@@ -5,7 +5,6 @@ from pytorch_lightning import loggers as pl_loggers
 import torchvision.transforms as transforms
 
 from pl_bolts.datamodules import CIFAR10DataModule, STL10DataModule, ImagenetDataModule
-from pl_bolts.models.self_supervised.simclr import SimCLRTrainDataTransform, SimCLREvalDataTransform
 from pl_bolts.callbacks.printing import PrintTableMetricsCallback
 from pl_bolts.transforms.dataset_normalizations import (
     cifar10_normalization,
@@ -18,6 +17,8 @@ import os
 from argparse import ArgumentParser
 
 # Custom imports
+from datasets.simclr_transforms import SimCLRTrainDataTransform, SimCLREvalDataTransform
+from datasets.shapes3d_datamodule import Shapes3DDataModule
 from models.module import LPL, SupervisedBaseline, NegSampleBaseline
 from callbacks.ssl_callbacks import SSLEvalCallback
 from utils.utils import generate_descriptor, get_time_stamp
@@ -27,7 +28,7 @@ def add_hyperparameter_args(parent_parser):
     parser = ArgumentParser(parents=[parent_parser], add_help=False)
 
     # Data params
-    parser.add_argument('--dataset', type=str, choices=['cifar10', 'imagenet2012', 'stl10'], default='cifar10')
+    parser.add_argument('--dataset', type=str, choices=['cifar10', 'imagenet2012', 'stl10', 'shapes3d'], default='cifar10')
     parser.add_argument('--downsample_images', action='store_true')
 
     # Training hyperparams
@@ -61,6 +62,8 @@ def cli_main():
     parser.add_argument('--verbose_printing', action='store_true')
 
     # Model options
+    parser.add_argument('--encoder', type=str, choices=['vgg', 'resnet', 'alexnet'], default='vgg')
+    parser.add_argument('--pretrained', action='store_true')
     parser.add_argument('--train_with_supervision', action='store_true')
     parser.add_argument('--use_negative_samples', action='store_true')
     parser.add_argument('--train_end_to_end', action='store_true')
@@ -77,7 +80,19 @@ def cli_main():
     dataset = args.dataset
     if args.downsample_images:
         dataset = dataset + '_downsampled'
+    if args.encoder != 'vgg':
+        dataset = dataset + '_' + args.encoder
     experiment_descriptor = generate_descriptor(**args.__dict__)
+    experiment_dir = os.path.join(ouputdir, dataset, experiment_descriptor)
+    # check if experiment already exists, if so don't overwrite but load from checkpoint
+    if os.path.exists(experiment_dir):
+        if args.resume_from_checkpoint:
+            args.resume_from_checkpoint = experiment_dir
+        else:
+            raise ValueError(f"Experiment directory {experiment_dir} already exists, please change experiment name")
+    # reload tensorboard logger if resuming from checkpoint
+    if args.resume_from_checkpoint:
+        args.logger = pl_loggers.TensorBoardLogger(args.resume_from_checkpoint)
     tensorboard_logger = pl_loggers.TensorBoardLogger(os.path.join(ouputdir, dataset), name=args.experiment_name,
                                                       version=experiment_descriptor)
 
@@ -108,9 +123,14 @@ def cli_main():
         normalization = imagenet_normalization()
         (c, h, w) = data_module.size()
 
-    data_module.train_transforms = SimCLRTrainDataTransform(h, normalize=normalization)
-    data_module.val_transforms = SimCLREvalDataTransform(h, normalize=normalization)
-    data_module.test_transforms = SimCLREvalDataTransform(h, normalize=normalization)
+    elif args.dataset == 'shapes3d':
+        data_module = Shapes3DDataModule.from_argparse_args(args, data_dir=data_dir)
+        (c, h, w) = (3, 64, 64)
+
+    if args.dataset != 'shapes3d':
+        data_module.train_transforms = SimCLRTrainDataTransform(h, normalize=normalization)
+        data_module.val_transforms = SimCLREvalDataTransform(h, normalize=normalization)
+        data_module.test_transforms = SimCLREvalDataTransform(h, normalize=normalization)
 
     if args.downsample_images:
         data_module.train_transforms = transforms.Compose([transforms.Resize(32),

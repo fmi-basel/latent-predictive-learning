@@ -32,7 +32,9 @@ class LPL(pl.LightningModule):
     """
 
     def __init__(self,
-                 num_classes,
+                 num_classes: int = 10,
+                 encoder: str = 'vgg',
+                 pretrained: bool = False,
                  train_end_to_end: bool = False,
                  use_projector_mlp: bool = False,
                  projection_size: int = 256,
@@ -57,7 +59,10 @@ class LPL(pl.LightningModule):
         super(LPL, self).__init__()
         self.save_hyperparameters()
 
-        self.network = LPLNet(train_end_to_end, use_projector_mlp, projection_size, mlp_hidden_size, base_image_size=base_image_size, no_biases=no_biases)
+        if encoder == 'resnet':
+            assert train_end_to_end, "Layer-local training currently not supported for resnet architectures"
+
+        self.network = LPLNet(encoder, pretrained, train_end_to_end, use_projector_mlp, projection_size, mlp_hidden_size, base_image_size=base_image_size, no_biases=no_biases)
         self.pooler = nn.AdaptiveAvgPool2d((1, 1))
         self.optimizer = optimizer
 

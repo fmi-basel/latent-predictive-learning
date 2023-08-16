@@ -124,3 +124,113 @@ class VGG11Encoder(nn.Module):
             feature_maps.append(x)
         
         return x_pooled, feature_maps, z
+
+
+class AlexNetEncoder(nn.Module):
+    def __init__(self, train_end_to_end=False, projector_mlp=False, projection_size=256, hidden_layer_size=2048, base_image_size=32, no_biases=False, extra_layer=False, dropout=0.5):
+        super().__init__()
+
+        self.layer_local = not train_end_to_end
+
+        # Conv bloks
+        self.blocks = nn.ModuleList([])
+        # Projector(s) - identity modules by default
+        self.projectors = nn.ModuleList([])
+        self.flattened_feature_dims = []
+        # Pooler
+        self.pooler = nn.AdaptiveAvgPool2d((1, 1))
+
+        self.blocks.append(nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=11, stride=4, padding=2),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2),
+        ))
+        projector = nn.Identity()
+        if projector_mlp and self.layer_local:
+            projector = MLP(input_dim=64, hidden_dim=hidden_layer_size, output_dim=projection_size, no_biases=no_biases)
+        self.projectors.append(projector)
+
+        self.blocks.append(nn.Sequential(
+            nn.Conv2d(64, 192, kernel_size=5, padding=2),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2),
+        ))
+        projector = nn.Identity()
+        if projector_mlp and self.layer_local:
+            projector = MLP(input_dim=192, hidden_dim=hidden_layer_size, output_dim=projection_size, no_biases=no_biases)
+        self.projectors.append(projector)
+
+        self.blocks.append(nn.Sequential(
+            nn.Conv2d(192, 384, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+        ))
+        projector = nn.Identity()
+        if projector_mlp and self.layer_local:
+            projector = MLP(input_dim=384, hidden_dim=hidden_layer_size, output_dim=projection_size, no_biases=no_biases)
+        self.projectors.append(projector)
+
+        self.blocks.append(nn.Sequential(
+            nn.Conv2d(384, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+        ))
+        projector = nn.Identity()
+        if projector_mlp and self.layer_local:
+            projector = MLP(input_dim=256, hidden_dim=hidden_layer_size, output_dim=projection_size, no_biases=no_biases)
+        self.projectors.append(projector)
+
+        self.blocks.append(nn.Sequential(
+            nn.Conv2d(256, 256, kernel_size=3, padding=2),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=3, stride=2),
+        ))
+        projector = nn.Identity()
+        if projector_mlp:
+            projector = MLP(input_dim=256, hidden_dim=hidden_layer_size, output_dim=projection_size, no_biases=no_biases)
+        self.projectors.append(projector)
+
+        self.blocks.append(nn.Sequential(
+            nn.AdaptiveAvgPool2d((6, 6)),
+            nn.Dropout(dropout),
+            nn.Conv2d(256, 4096, kernel_size=6, padding=0),
+            nn.ReLU(inplace=True),
+        ))
+        projector = nn.Identity()
+        if projector_mlp and self.layer_local:
+            projector = MLP(input_dim=4096, hidden_dim=hidden_layer_size, output_dim=projection_size, no_biases=no_biases)
+        self.projectors.append(projector)
+
+        self.blocks.append(nn.Sequential(
+            nn.Dropout(dropout),
+            nn.Conv2d(4096, 4096, kernel_size=1, padding=0),
+            nn.ReLU(inplace=True),
+        ))
+        projector = nn.Identity()
+        if projector_mlp:
+            projector = MLP(input_dim=4096, hidden_dim=hidden_layer_size, output_dim=projection_size, no_biases=no_biases)
+        self.projectors.append(projector)
+        
+        self.channel_sizes = [64, 192, 384, 256, 256, 4096, 4096]
+        # self.channel_sizes = [64, 192, 384, 256, 256]
+
+    def forward(self, x):
+        z = []
+        feature_maps = []
+        for i, block in enumerate(self.blocks):
+            x = block(x)
+
+            # For layer-local training, record intermediate feature maps and pooled layer activities z (after projection if specified)
+            # Also make sure to detach layer outputs so that gradients are not backproped
+            if self.layer_local:
+                x_pooled = self.pooler(x).view(x.size(0), -1)
+                z.append(self.projectors[i](x_pooled))
+                feature_maps.append(x)
+                x = x.detach()
+                
+        x_pooled = self.pooler(x).view(x.size(0), -1)
+        
+        # Get outputs for end-to-end training
+        if not self.layer_local:
+            z.append(self.projectors[-1](x_pooled))
+            feature_maps.append(x)
+        
+        return x_pooled, feature_maps, z
