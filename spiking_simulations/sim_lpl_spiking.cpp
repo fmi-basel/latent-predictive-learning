@@ -421,6 +421,11 @@ int main(int ac, char* av[])
 	con_lpl->set_tau_rms(tau_rms);
 	con_lpl->set_max_weight(wmax);
 
+	// record LPL dynamic variables
+	const NeuronID rec_unit = 7;
+	StateMonitor * statmon_lpl1 = new StateMonitor( con_lpl->tr_post_mean, rec_unit, sys->fn("tr_post_mean","dat"), 1.0 );
+	StateMonitor * statmon_lpl2 = new StateMonitor( con_lpl->tr_post_sigma2, rec_unit, sys->fn("tr_post_sigma2","dat"), 1.0 );
+
 
 	if ( w_ee > 0.0 ) {
 		LPLConnection * con_lpl_rec = new LPLConnection(neurons_e, neurons_e, w_ext, sparseness, eta, lambda, phi, tau_mean, tau_sigma2);

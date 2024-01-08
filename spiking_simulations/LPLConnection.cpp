@@ -187,7 +187,7 @@ LPLConnection::LPLConnection(
 		name)
 {
 	init(eta, tau_mean, tau_sigma2, maxweight);
-	lambda_ = lambda;
+	lambda_ = lambda*auryn_timestep; 
 	phi_ = phi;
 	if ( name.empty() )
 		set_name("LPLConnection");
@@ -247,9 +247,9 @@ void LPLConnection::compute_err()
 		err->add_specific(trspk, 1.0);
 	}
 	temp->copy(tr_post_sigma2);
-	temp->add(1e-3); // TODO make a parameter called xi to be used denominator
+	temp->add(1e-6); // TODO make a parameter called xi to be used denominator
 	err->div(temp);
-	err->scale(lambda_);
+	err->scale(lambda_); // TESTING new changes
 	// err->add(delta); // add transmitter triggered plasticity 
 
 	// Compute -dzdt error signal on spike trains using the van Rossum trick
@@ -258,9 +258,11 @@ void LPLConnection::compute_err()
 
 	// some qnd monitoring
 	if ( false && sys->get_clock()%100000==0) std::cout << std::scientific 
+		<< " time " << sys->get_time()
 		<< " avgsqrerr " << avgsqrerr->mean()
 		<< ", mean firing rate " << tr_post_mean->mean()/tr_post_mean->get_tau() 
 		<< ", tr_post_sigma2 " << tr_post_sigma2->mean() 
+		<< ", err var " << err->var() 
 		<< std::endl;
 
 
@@ -334,7 +336,7 @@ void LPLConnection::process_plasticity()
 
 
 	// add transmitter triggered plasticity term
-	// loop over all pre spikes  INPROGRESS
+	// loop over all pre spikes  
 	for (SpikeContainer::const_iterator spike = src->get_spikes()->begin() ; // spike = pre_spike
 			spike != src->get_spikes()->end() ; ++spike ) {
 		// loop over all postsynaptic target cells 
@@ -499,7 +501,7 @@ void LPLConnection::evolve()
 	temp->sqr();
 
 	// add to moving tr_post_sigma2
-	temp->scale(1.0/tr_post_sigma2->get_tau()); // correct for mean time scale 
+	temp->scale(1.0*auryn_timestep/tr_post_sigma2->get_tau()); // correct for mean time scale 
 	tr_post_sigma2->add(temp);
 	tr_post_sigma2->evolve();
 }
