@@ -47,5 +47,5 @@ Apologies for these inconsistencies.
 
 ## Implementation of relative refractory period ([Issue #5](https://github.com/fmi-basel/latent-predictive-learning/issues/5))
 
-In the implementation of the absolute and relative refractory period of our spiking neuron model, the moving threshold is set to 50mV after every spike before being exponentially decayed down to the resting threshold value of -50mV instead of jumping by 100mV as stated in the paper (cf. Eq. (16)). Thus threshold effects do not accumulate, but are reset with every spike. However, this difference only causes minor differences at *very* high firing rates to the model as described in the methods.
+In the implementation of the absolute and relative refractory period of our spiking neuron model, the moving threshold is set to 50mV after every spike before being exponentially decayed down to the resting threshold value of -50mV instead of jumping by 100mV as stated in the paper (cf. Eq. (16)). Thus threshold effects do not accumulate, but are reset with every spike. However, this difference only has a minor effect at *very* high firing rates to the model and thus unlikely to affect the results.
 
