@@ -28,15 +28,16 @@ This qualitative resemblance can be seen in the following animated GIF comparing
 
 There is another mismatch between code as simulated and the methods which affects the effective learning rate of the spiking rule.
 Specifically, the double exponential filtering with $\epsilon$ as well as with the $\alpha$ kernel on the left in Eq. (18) above was implemented as follows:
-\begin{eqnarray*}
-	\frac{\mathrm{d}\bar c}{dt}(t) &=& -\frac{\bar c(t)}{\tau^\mathrm{rise}} + c(t) \\
-	\tau^\mathrm{fall} \frac{\mathrm{d} \bar{\bar{c}}}{\mathrm{d}t}(t) &=& -\bar{\bar{c}}(t) + \bar c(t) 
-\end{eqnarray*}
+$$\frac{\mathrm{d}\bar c}{dt}(t) = -\frac{\bar c(t)}{\tau^\mathrm{rise}} + c(t)$$
+
+$$ \tau^\mathrm{fall} \frac{\mathrm{d} \bar{\bar{c}}}{\mathrm{d}t}(t) = -\bar{\bar{c}}(t) + \bar c(t) $$
+
 in contrast to what we stated in the methods, which was
-\begin{eqnarray*}
-	\tau^\mathrm{rise} \frac{\mathrm{d}\bar c}{dt}(t) &=& -\bar c(t) + c(t) \\
-	\tau^\mathrm{fall} \frac{\mathrm{d} \bar{\bar{c}}}{\mathrm{d}t}(t) &=& -\bar{\bar{c}}(t) + \bar c(t) 
-\end{eqnarray*}
+
+$$\tau^\mathrm{rise} \frac{\mathrm{d}\bar c}{dt}(t) = -\bar c(t) + c(t)$$
+
+$$\tau^\mathrm{fall} \frac{\mathrm{d} \bar{\bar{c}}}{\mathrm{d}t}(t) = -\bar{\bar{c}}(t) + \bar c(t)$$
+
 The rhs convolution with $\alpha$ was implemented as stated.
 Since all filters are implemented through linear ODEs, the difference in implementation corresponds to an amplitude change of the filtered quantity while the shape remains unaffected. 
 Thus the change corresponds to a change of learning rate by a factor of $\tau_\mathrm{rise}$. Hence the effective learning rate was by this factor _lower_ in our simulations than the methods suggest. 
