@@ -2,7 +2,7 @@
 
 ![Alt text](summary_figure.png "LPL")
 
-This repository contains code for reproducing results reported in our preprint on [LPL](https://www.biorxiv.org/content/10.1101/2022.03.17.484712v1), a framework for biologically plausible self-supervised learning.
+This repository contains code for reproducing results reported in our preprint on [LPL](https://www.nature.com/articles/s41593-023-01460-y), a framework for biologically plausible self-supervised learning.
 
 ## Setup
 
@@ -50,11 +50,16 @@ You find the spiking network code and instructions for reproducing the correspon
 ## Citation
 
 ```
-@article{halvagal2022combination,
-  title={The combination of Hebbian and predictive plasticity learns invariant object representations in deep sensory networks},
-  author={Halvagal, Manu Srinath and Zenke, Friedemann},
-  journal={bioRxiv},
-  year={2022},
-  publisher={Cold Spring Harbor Laboratory}
+@article{halvagal_combination_2023,
+    title = {The combination of {Hebbian} and predictive plasticity learns invariant object representations in deep sensory networks},
+    author = {Halvagal, Manu Srinath and Zenke, Friedemann},
+    year = {2023},
+    journal = {Nature Neuroscience},
+    volume = {26},
+    number = {11},
+    pages = {1906--1915},
+    issn = {1546-1726},
+    url = {https://www.nature.com/articles/s41593-023-01460-y},
+    doi = {10.1038/s41593-023-01460-y},
 }
 ```
