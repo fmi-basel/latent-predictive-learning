@@ -7,7 +7,8 @@ Thanks for reporting these problems. Our sincerest apologies that they made it i
 
 # Spiking Network Simulations
 
-Thanks to Github user [yilun-wu](https://github.com/yilun-wu), who made us aware of two small discrepancies between our simulation code and its description in the methods (Issues [#2](https://github.com/fmi-basel/latent-predictive-learning/issues/2) and [#3](https://github.com/fmi-basel/latent-predictive-learning/issues/3)).
+Thanks to Github user [yilun-wu](https://github.com/yilun-wu), who made us aware of two small discrepancies between our simulation code and its description in the methods (Issues [#2](https://github.com/fmi-basel/latent-predictive-learning/issues/2), [#3](https://github.com/fmi-basel/latent-predictive-learning/issues/3)), and ([Issue #5](https://github.com/fmi-basel/latent-predictive-learning/issues/5))
+.
 
 
 ## Implementation of transmitter triggered plasticity ([Issue #2](https://github.com/fmi-basel/latent-predictive-learning/issues/2))
@@ -44,4 +45,7 @@ Thus the change corresponds to a change of learning rate by a factor of $\tau_\m
 Apologies for these inconsistencies. 
 
 
+## Implementation of relative refractory period ([Issue #5](https://github.com/fmi-basel/latent-predictive-learning/issues/5))
+
+In the implementation of the absolute and relative refractory period, the moving threshold of our neuron model is set to 50mV after every spike before being exponentially decayed down to the resting threshold value of -50mV instead of jumping by 100mV as stated in the paper (cf. Eq. (16)). Thus threshold effects do not accumulate, but are reset with every spike. However, this difference only causes minor differences at *very* high firing rates to the model as described in the methods.
 
