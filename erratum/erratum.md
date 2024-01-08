@@ -7,7 +7,7 @@ Thanks for reporting these problems. Our sincerest apologies that they made it i
 
 # Spiking Network Simulations
 
-Thanks to Github user [yilun-wu](https://github.com/yilun-wu), who made us aware of two small discrepancies between our simulation code and its description in the methods (Issues [#2](https://github.com/fmi-basel/latent-predictive-learning/issues/2), [#3](https://github.com/fmi-basel/latent-predictive-learning/issues/3)), and ([Issue #5](https://github.com/fmi-basel/latent-predictive-learning/issues/5))
+Thanks to Github user [yilun-wu](https://github.com/yilun-wu), who made us aware of two small discrepancies between our simulation code and its description in the methods (Issues [#2](https://github.com/fmi-basel/latent-predictive-learning/issues/2), [#3](https://github.com/fmi-basel/latent-predictive-learning/issues/3), and [#5](https://github.com/fmi-basel/latent-predictive-learning/issues/5)).
 .
 
 
