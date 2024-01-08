@@ -1,0 +1,37 @@
+diff --git a/spiking_simulations/LPLConnection.cpp b/spiking_simulations/LPLConnection.cpp
+index dfda86e..be755eb 100755
+--- a/spiking_simulations/LPLConnection.cpp
++++ b/spiking_simulations/LPLConnection.cpp
+@@ -250,7 +250,7 @@ void LPLConnection::compute_err()
+ 	temp->add(1e-3); // TODO make a parameter called xi to be used denominator
+ 	err->div(temp);
+ 	err->scale(lambda_);
+-	err->add(delta); // add transmitter triggered plasticity 
++	// err->add(delta); // add transmitter triggered plasticity 
+ 
+ 	// Compute -dzdt error signal on spike trains using the van Rossum trick
+ 	for ( unsigned int i = 0 ; i < sc->size(); ++i ) add_to_err(sc->at(i), -1.0*phi_);
+@@ -331,6 +331,23 @@ void LPLConnection::process_plasticity()
+ 			el_sum->add_specific(didx, de);
+ 		}
+ 	}
++
++
++	// add transmitter triggered plasticity term
++	// loop over all pre spikes  
++	for (SpikeContainer::const_iterator spike = src->get_spikes()->begin() ; // spike = pre_spike
++			spike != src->get_spikes()->end() ; ++spike ) {
++		// loop over all postsynaptic target cells 
++		for (const NeuronID * c = w->get_row_begin(*spike) ; 
++				c != w->get_row_end(*spike) ; 
++				++c ) { // c = post index
++
++			// determines the weight of connection
++			AurynWeight * weight = w->get_data_ptr(c); 
++			const AurynLong didx = w->data_ptr_to_didx(weight); 
++			el_sum->add_specific(didx, delta); // add the transmitter triggered term
++		}
++	}	
+ }
+ 
+ 
