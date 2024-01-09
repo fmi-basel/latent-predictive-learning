@@ -49,3 +49,12 @@ Apologies for these inconsistencies.
 
 In the implementation of the absolute and relative refractory period of our spiking neuron model, the moving threshold is set to 50mV after every spike before being exponentially decayed down to the resting threshold value of -50mV instead of jumping by 100mV as stated in the paper (cf. Eq. (16)). Thus threshold effects do not accumulate, but are reset with every spike. However, this difference only has a minor effect at *very* high firing rates to the model and thus unlikely to affect the results.
 
+
+## Implementation of inhibitory plasticity
+
+There is a sign error in Eq. (24) in the article. 
+We simulated   
+$$ \frac{dw_{ij}^\mathrm{inh}}{dt} = \zeta \left( ( x_i(t) - 2\kappa\tau^\mathrm{stdp} ) S_j(t) + (x_j(t) S_i(t) ) \right) $$
+and not 
+$$ \frac{dw_{ij}^\mathrm{inh}}{dt} = \zeta \left( ( x_i(t) + 2\kappa\tau^\mathrm{stdp} ) S_j(t) + (x_j(t) S_i(t) ) \right) $$
+as stated in the article.
