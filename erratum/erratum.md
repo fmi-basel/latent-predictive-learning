@@ -54,7 +54,11 @@ In the implementation of the absolute and relative refractory period of our spik
 
 There is a sign error in Eq. (24) in the article. 
 We simulated   
-$$ \frac{dw_{ij}^\mathrm{inh}}{dt} = \zeta \left( ( x_i(t) - 2\kappa\tau^\mathrm{stdp} ) S_j(t) + (x_j(t) S_i(t) ) \right) $$
+
+$$\frac{dw_{ij}^\mathrm{inh}}{dt} = \zeta \left( ( x_i(t) - 2\kappa\tau^\mathrm{stdp} ) S_j(t) + (x_j(t) S_i(t) ) \right)$$
+
 and not 
-$$ \frac{dw_{ij}^\mathrm{inh}}{dt} = \zeta \left( ( x_i(t) + 2\kappa\tau^\mathrm{stdp} ) S_j(t) + (x_j(t) S_i(t) ) \right) $$
+
+$$\frac{dw_{ij}^\mathrm{inh}}{dt} = \zeta \left( ( x_i(t) + 2\kappa\tau^\mathrm{stdp} ) S_j(t) + (x_j(t) S_i(t) ) \right)$$
+
 as stated in the article.
