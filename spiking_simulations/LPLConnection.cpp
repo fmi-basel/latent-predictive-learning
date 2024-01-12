@@ -38,7 +38,7 @@ void LPLConnection::init(AurynFloat eta, AurynFloat tau_mean, AurynFloat tau_sig
 	eta_ = eta;
 	auryn::logger->parameter("eta",eta);
 
-	delta = 1e-5; // strength of transmitter triggered plasticity
+	delta = 1e-3; // strength of transmitter triggered plasticity
 	auryn::logger->parameter("delta",delta);
 
 	epsilon = 1e-32; //!< for division by zero cases
@@ -247,7 +247,7 @@ void LPLConnection::compute_err()
 		err->add_specific(trspk, 1.0);
 	}
 	temp->copy(tr_post_sigma2);
-	temp->add(1e-6); // TODO make a parameter called xi to be used denominator
+	temp->add(1e-7); // TODO make a parameter called xi to be used denominator
 	err->div(temp);
 	err->scale(lambda_); // TESTING new changes
 	// err->add(delta); // add transmitter triggered plasticity 
