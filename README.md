@@ -4,6 +4,12 @@
 
 This repository contains code for reproducing results reported in our preprint on [LPL](https://www.nature.com/articles/s41593-023-01460-y), a framework for biologically plausible self-supervised learning.
 
+
+
+**Erratum** (updated Jan 2024): Despite careful checking, some errors and typos have made it into the published manuscript. 
+We collect these errors [here](erratum/erratum.md).
+
+
 ## Setup
 
 The deep learning simulations are based on the pytorch lightning framework. We've provided a requirements file to help you install everything you need by just running:
