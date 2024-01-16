@@ -2,6 +2,9 @@
 
 This directory contains the code to reproduce all spiking network results with Latent Predictive Learning.
 
+**Erratum** (updated Jan 2024): Despite careful checking, some errors and typos have made it into the published manuscript. 
+We collect these errors [here](../erratum/erratum.md).
+
 ## Compiling the code
 
 The spiking network simulations require the [Auryn Simulator](https://fzenke.net/auryn). 
