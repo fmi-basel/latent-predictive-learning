@@ -4,6 +4,29 @@ Here we keep track of typos and errors that have been reported to us by the atte
 
 Thanks for reporting these problems. Our sincerest apologies that they made it into the final manuscript.
 
+# Deep Learning Simulations
+
+## Incorrect equation for the decorrelation loss
+
+In the article, the decorrelation loss is described as "the sum of the squared off-diagonal terms of the covariance matrix between units". However, the expression provided in Eq. (6) was incorrectly written as:
+
+$$\mathcal{L}_\mathrm{decorr}(t) = \frac{1}{(B-1)(M^2-M)}\sum_{b=1}^B\sum_{i=1}^M\sum_{k\neq i} (z_i^b(t)-\bar{z}_i(t))^2(z_k^b(t)-\bar{z}_k(t))^2,$$
+
+whereas the correct expression is:
+
+$$\mathcal{L}_\mathrm{decorr}(t) = \frac{1}{4(M^2-M)}\sum_{i=1}^{M}\sum_{k\neq i}\left( \frac{\sum_{b=1}^B\left(z_i^b(t)-\bar{z}_i(t) \right) \left(z_k^b(t)-\bar{z}_k(t) \right)}{B-1}  \right)^2.$$
+
+Consequently, the expressions for the learning rules in Eq. (7) in the article, and Eqs. (3) and (4) in the supplementary material are also incorrect. The corrected expressions for the learning rules are:
+
+$$\Delta W_{ij} = \eta\frac{1}{MB}\sum_{b=1}^B \biggl( -(z_i^b - z_i^b(t-\Delta t)) + \lambda_1\frac{\alpha}{\sigma_{i}^2}(z_i^b - \bar{z}_i) - \lambda_2\beta \sum_{k\neq i} (z_k^b - \bar{z}_k)C_{ik} \biggr) f'(a_i^b)x_j^b - \eta \eta_w W_{ij}$$
+
+$$ \frac{\partial \mathcal{L}_{\mathrm{decorr}}}{\partial W_{ij}} = \frac{1}{(B-1)(M^2-M)} \sum_{b=1}^B f'(a_i^b)x_j^b \sum_{k\neq i}\left(z_k^b(t)-\bar{z}_k(t)\right)  C_{ik},$$
+
+where $C_{ik}$ is the covariance matrix between units $i$ and $k$:
+
+$$C_{ik} = \frac{1}{B-1}\sum_{b=1}^B \left(z_i^b(t)-\bar{z}_i(t)\right)\left(z_k^b(t)-\bar{z}_k(t)\right).$$
+
+The corrected equations are the ones that were used in the simulations and the results presented in the article. This form of the decorrelation objective was proposed in VICReg, and is typically used in Self-Supervised Learning. The incorrect form of the decorrelation loss was a mistake made during the writing of the article. Since the decorrelation objective was only used as a convenient way to enforce decorrelation, the error does not affect the results or conclusions of the article. We apologize for the confusion caused by this error, and will be publishing an erratum to correct this in the article.
 
 # Spiking Network Simulations
 
