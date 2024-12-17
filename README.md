@@ -6,7 +6,7 @@ This repository contains code for reproducing results reported in our preprint o
 
 
 
-**Erratum** (updated Jan 2024): Despite careful checking, some errors and typos have made it into the published manuscript. 
+**Erratum**: Despite careful checking, some errors and typos have made it into the published manuscript. 
 We collect these errors [here](erratum/erratum.md).
 
 
