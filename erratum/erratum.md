@@ -14,7 +14,7 @@ Importantly, it does neither affect the results nor the conclusions of the study
 In the article, we introduced the decorrelation loss as "the sum of the squared off-diagonal terms of the covariance matrix between units" given
 by Eq. (6):
 
-$$\L_\mathrm{decorr}(t) = \frac{1}{(B-1)(M^2-M)}\sum_{b=1}^B\sum_{i=1}^M\sum_{k\neq i} (z_i^b(t)-\bar{z}_i(t))^2(z_k^b(t)-\bar{z}_k(t))^2 \quad .$$ 
+$$L_\mathrm{decorr}(t) = \frac{1}{(B-1)(M^2-M)}\sum_{b=1}^B\sum_{i=1}^M\sum_{k\neq i} (z_i^b(t)-\bar{z}_i(t))^2(z_k^b(t)-\bar{z}_k(t))^2 \quad .$$ 
 
 which is incorrect. The correct expression is:
 
