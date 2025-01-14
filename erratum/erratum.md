@@ -38,53 +38,13 @@ $$C_{ik} = \frac{1}{B-1}\sum_{b=1}^B \left(z_i^b(t)-\bar{z}\_i(t)\right)\left(z_
 We apologize for any confusion caused by this oversight.
 
 
-# Spiking Network Simulations
+## Spiking Network Simulations
 
 Thanks to Github user [yilun-wu](https://github.com/yilun-wu), who made us aware of a few small discrepancies between our simulation code and its description in the methods (Issues [#2](https://github.com/fmi-basel/latent-predictive-learning/issues/2), [#3](https://github.com/fmi-basel/latent-predictive-learning/issues/3), [#4](https://github.com/fmi-basel/latent-predictive-learning/issues/4), and [#5](https://github.com/fmi-basel/latent-predictive-learning/issues/5)).
 .
 
 
-## Implementation of transmitter triggered plasticity ([Issue #2](https://github.com/fmi-basel/latent-predictive-learning/issues/2))
-=======
-## Deep Learning Simulations
-
-### Mathematical expression for the decorrelation loss
-
-Thanks to Roy Urbach for pointing out a discrepancy between our simulation code underlying the decorrelation loss and the corresponding mathematical expression in the Methods section.
-The mistake happened when transcribing our simulation code into equations. 
-It does neither affect the results nor the study's conclusions.
-In the article, we introduced the decorrelation loss as "the sum of the squared off-diagonal terms of the covariance matrix between units" given
-by Eq. (6):
-
-$$\mathcal{L}\_\mathrm{decorr}(t) = \frac{1}{(B-1)(M^2-M)}\sum_{b=1}^B\sum_{i=1}^M\sum_{k\neq i} (z_i^b(t)-\bar{z}\_i(t))^2(z_k^b(t)-\bar{z}\_k(t))^2 \quad ,$$
-
-which is incorrect. The correct expression is:
-
-$$\mathcal{L}\_\mathrm{decorr}(t) = \frac{1}{(M^2-M)}\sum_{i=1}^{M}\sum_{k\neq i}\left( \frac{\sum_{b=1}^B\left(z_i^b(t)-\bar{z}\_i(t) \right) \left(z_k^b(t)-\bar{z}\_k(t) \right)}{B-1}  \right)^2 \quad .$$
-
-Consequently, the learning rule in Eq. (7) and Eqs. (3) and (4) in the Supplementary Material derived from the erroneous expression are also affected. 
-The corrected expressions for the learning rules are:
-
-$$\Delta W_{ij} = \eta\frac{1}{MB}\sum_{b=1}^B \biggl( -(z_i^b - z_i^b(t-\Delta t)) + \lambda_1\frac{\alpha}{\sigma_{i}^2}(z_i^b - \bar{z}\_i) - \lambda_2\beta \sum_{k\neq i} (z_k^b - \bar{z}\_k)C_{ik} \biggr) f'(a_i^b)x_j^b - \eta \eta_w W_{ij}$$
-
-and
-
-$$ \frac{\partial \mathcal{L}\_{\mathrm{decorr}}}{\partial W_{ij}} = \frac{4}{(B-1)(M^2-M)} \sum_{b=1}^B f'(a_i^b)x_j^b \sum_{k\neq i}\left(z_k^b(t)-\bar{z}\_k(t)\right)  C_{ik} \quad ,$$
-
-where $C_{ik}$ is the covariance between units $i$ and $k$:
-
-$$C_{ik} = \frac{1}{B-1}\sum_{b=1}^B \left(z_i^b(t)-\bar{z}\_i(t)\right)\left(z_k^b(t)-\bar{z}\_k(t)\right).$$
-
-We apologize for any confusion caused by this oversight.
-
-
-## Spiking Network Simulations
-
-Thanks to Github user [yilun-wu](https://github.com/yilun-wu), who made us aware of a few small discrepancies between our simulation code and its description in the methods (Issues [#2](https://github.com/fmi-basel/latent-predictive-learning/issues/2), [#3](https://github.com/fmi-basel/latent-predictive-learning/issues/3), [#4](https://github.com/fmi-basel/latent-predictive-learning/issues/4), and [#5](https://github.com/fmi-basel/latent-predictive-learning/issues/5)).
-
-
 ### Implementation of transmitter triggered plasticity ([Issue #2](https://github.com/fmi-basel/latent-predictive-learning/issues/2))
->>>>>>> erratum
 
 First, there is a small mismatch between our spiking learning rule simulation and the rule reported in the Methods Eq. (18).
 The learning rule we simulated was the following and that's what Eq. (18) should have read:
